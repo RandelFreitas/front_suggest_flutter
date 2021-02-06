@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/alert_dialog.dart';
-import '../utils/app_routes.dart';
+import 'package:suggest/stores/auth_store.dart';
+import 'package:suggest/utils/app_routes.dart';
+import 'package:suggest/widgets/alert_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,25 +11,28 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final Map<String, String> _login = {};
   bool _isLoading = false;
+  final auth = AuthStore();
 
-  void authenticate() {
+  void signIn(login) {
     setState(() {
       _isLoading = true;
     });
-    try {
-      if (true) {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
-      } else {
-        AlertDialogWid(context, "Login inválido!");
-      }
+    try{
+      auth.signIn(login).then((_) {
+        if(auth.msg.value == null){
+          Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+        }else{
+          AlertDialogWid(context, auth.msg.value);
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }catch(e){
       setState(() {
         _isLoading = false;
       });
-    } catch (e) {
-      print("erro");
-      setState(() {
-        _isLoading = false;
-      });
+      AlertDialogWid(context, "Erro no servidor, contate o adm.");
     }
   }
 
@@ -78,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 else
                   ElevatedButton(
                     onPressed: () {
-                      authenticate();
+                      signIn(_login);
                     },
                     child: Text('Entrar'),
                   ),

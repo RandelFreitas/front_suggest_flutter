@@ -20,7 +20,7 @@ class AlertDialogWid {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-            )
+            ),
           ],
         );
       },

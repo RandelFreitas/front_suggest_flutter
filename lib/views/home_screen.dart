@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suggest/stores/company_store.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,6 +8,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  final company = CompanyStore();
 
   _onSelectItem(int index) {
     setState(() => _selectedIndex = index);
@@ -71,7 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: _getDrawerItem(_selectedIndex),
+      body: ElevatedButton(
+        child: Text("Teste"),
+        onPressed: () {
+          company.getCompanies();
+        },
+      ),
     );
   }
 }

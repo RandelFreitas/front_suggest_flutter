@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './utils/app_routes.dart';
 import './views/home_screen.dart';
 import './views/login_screen.dart';
 
-void main() => runApp(MyApp());
+SharedPreferences sp;
+
+void main() async {
+  sp = await SharedPreferences.getInstance();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
