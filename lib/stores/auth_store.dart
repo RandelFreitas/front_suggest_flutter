@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suggest/utils/constants.dart';
 import 'package:suggest/utils/request_interceptors.dart';
+import '../main.dart';
 
 class AuthStore{
   final Dio client = getDio();
@@ -18,11 +18,19 @@ class AuthStore{
           "password": login['password'],
         }),
       ).then((response) async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', response.data['token']);
+        sp.setString('token', response.data['token']);
+        sp.setString('name', response.data['name']);
       });
     }catch(e){
       msg.value = e.response.data['err'];
+    }
+  }
+
+  void logout() {
+    try{
+      sp.clear();
+    }catch(e){
+      msg.value = "Erro no logout.";
     }
   }
 }

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:suggest/stores/auth_store.dart';
 import 'package:suggest/stores/company_store.dart';
+import 'package:suggest/views/suggest_screen.dart';
+
+import 'company_screen.dart';
+import 'dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,16 +12,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  String _selectedIndex = 'dashboard';
   final company = CompanyStore();
+  final auth = AuthStore();
 
-  _onSelectItem(int index) {
+  _onSelectItem(String index) {
     setState(() => _selectedIndex = index);
     Navigator.of(context).pop();
   }
 
-  _getDrawerItem(int pos) {
+  _getDrawerItem(String pos) {
     switch (pos) {
+      case 'dashboard':
+        return DashboardScreen();
+      case 'suggests':
+        return SuggestScreen();
+      case 'companies':
+        return CompanyScreen();
     }
   }
 
@@ -25,6 +37,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('SuggestInBox'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Configurações',
+              onPressed: () {},
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                auth.logout();
+              },
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Column(
@@ -37,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.blue,
               ),
             ),
-            ExpansionTile(
+            ListTile(
               leading: Icon(Icons.description),
               title: Text(
                 'Dashboard',
@@ -46,9 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              children: [],
+              onTap: () {
+                _onSelectItem('dashboard');
+              },
             ),
-            ExpansionTile(
+            ListTile(
               leading: Icon(Icons.alt_route),
               title: Text(
                 'Suggests',
@@ -57,9 +91,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              children: [],
+              onTap: () {
+                _onSelectItem('suggests');
+              },
             ),
-            ExpansionTile(
+            ListTile(
               leading: Icon(Icons.settings),
               title: Text(
                 'Configurações',
@@ -68,17 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              children: [],
+              onTap: () {
+                _onSelectItem('companies');
+              },
             ),
           ],
         ),
       ),
-      body: ElevatedButton(
-        child: Text("Teste"),
-        onPressed: () {
-          company.getCompanies();
-        },
-      ),
+      body: _getDrawerItem(_selectedIndex),
     );
   }
 }
